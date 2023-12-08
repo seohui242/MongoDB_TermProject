@@ -3,7 +3,7 @@ const { Blog } = require("../models/blog");
 const { Member } = require("../models/member");
 const commentRouter = require("./commentController");
 const { isValidObjectId } = require("mongoose");
-
+//test
 const blogRouter = Router();
 blogRouter.use("/:blogId/comment", commentRouter);
 
