@@ -2,8 +2,8 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 
-const memberController = require("./routers/memberController");
-const blogController = require("./routers/blogController");
+const hostController = require("./routers/hostController");
+const guestController = require("./routers/guestController")
 
 const hostname = "127.0.0.1";
 const port = 3000;
@@ -15,8 +15,8 @@ const server = async () => {
 try {
     await mongoose.connect(DB_URI);
     app.use(express.json());
-    app.use(memberController);
-    app.use("/blog", blogController);
+    app.use("/host", hostController);
+    app.use("/guest", guestController);
     app.listen(port, hostname, function () {
         console.log(`Server running at http://${hostname}:${port}/`);
     });
