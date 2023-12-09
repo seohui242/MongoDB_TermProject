@@ -3,7 +3,6 @@ const { Schema, model, Types } = mongoose;
 
 const LodgingSchema = new Schema(
     {
-        lodging_id: {type: String, required : true},
         city: {type: Number, required: true},
         street: { type: String, required: true },
         zip_code: { type: String, required: true },
@@ -14,7 +13,7 @@ const LodgingSchema = new Schema(
         discount_policy_id: { type: Types.ObjectId, required: false },
         base_id: { type: Types.ObjectId, required: true , ref: "Host"},
         house_id: { type: Types.ObjectId, required: true , ref: "House"},
-        rate_policy_id: { type: Types.ObjectId, required: true , ref: ""},
+        rate_policy_id: { type: Types.ObjectId, required: true , ref: "RatePolicy"},
     }
 );
 

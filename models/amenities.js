@@ -1,12 +1,11 @@
 const mongoose = require("mongoose");
 const { Schema, model, Types } = mongoose;
 
-const RoomSchema = new Schema(
+const AmenitiesSchema = new Schema(
     {
-        room_book: { type: Boolean, required: true },
         house_id: {type: Types.ObjectId, required: true, ref: "House"}
     }
 );
 
-const Room = mongoose.model("Room", RoomSchema);
-module.exports = { Room };
+const Amenities = mongoose.model("Amenities", AmenitiesSchema);
+module.exports = { Amenities };
