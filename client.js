@@ -10,7 +10,7 @@ getSearchAccomodation("2023-12-04", "2023-12-05", 5, "개인");
 
 //2. 숙소 상세 조회 (검사할 때는 뒤에 숙소 _id 확인하고 넣어서 ㄱㄱ)
 const getDetailAccommodation = async (accId) => {
-  function printCalendar(month, reservations) {
+  function printCalendar(month, reservations, type, capacity) {
     const date = new Date();
     const year = date.getFullYear();
   
@@ -21,9 +21,18 @@ const getDetailAccommodation = async (accId) => {
     reservations.forEach((reservation) => {
       let checkIn = new Date(reservation.checkIn);
       let checkOut = new Date(reservation.checkOut);
+      let count = reservation.count;
       for (let d = new Date(checkIn); d <= checkOut; d.setDate(d.getDate() + 1)) {
         if (d.getMonth() === month) {
-          reservationDates[d.getDate()] = true;
+          let date = d.getDate();
+          if (reservationDates[date]) {
+            reservationDates[date].count += count;
+          } else {
+            reservationDates[date] = {
+              count: count,
+              marked: true
+            };
+          }
         }
       }
     });
@@ -39,9 +48,11 @@ const getDetailAccommodation = async (accId) => {
     for (let i = 1; i <= daysInMonth; i++) {
       calendar += i < 10 ? " " + i + " " : i + " ";
       if (reservationDates[i]) {
-        markerRow += " O ";
+        if(type === "전체") markerRow += " O ";
+        else markerRow += " " +(capacity - reservationDates[i].count)+ " ";
       } else {
-        markerRow += " * ";
+        if(type === "전체") markerRow += " * ";
+        else markerRow += " " + capacity + " ";
       }
       if ((i + startDay) % 7 === 0) {
         calendar += "\n" + markerRow + "\n";
@@ -101,7 +112,7 @@ const getDetailAccommodation = async (accId) => {
   var month = date.getMonth();
 
   console.log("\n[RESERVATION CALENDAR]");
-  printCalendar(month, response.data.reservations);
+  printCalendar(month, response.data.reservations, response.data.accommodationType, response.data.accommodation.capacity);
   console.log(
     "==============================================================="
   );
