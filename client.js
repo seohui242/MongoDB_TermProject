@@ -1,55 +1,64 @@
 const axios = require("axios");
+//1. 조건에 맞는 숙소 조회
+const getSearchAccomodation = async (checkIn, checkOut, count, type) => {
+  const response = await axios.get(
+    `http://127.0.0.1:3000/accommodation?checkIn=${checkIn}&checkOut=${checkOut}&count=${count}&type=${type}`
+  );
+  console.log(response.data);
+}
+getSearchAccomodation("2023-12-04", "2023-12-05", 5, "개인");
 
 //2. 숙소 상세 조회 (검사할 때는 뒤에 숙소 _id 확인하고 넣어서 ㄱㄱ)
-function printCalendar(month, reservations) {
-  const date = new Date();
-  const year = date.getFullYear();
-
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const startDay = new Date(year, month, 1).getDay();
-
-  let reservationDates = {};
-  reservations.forEach((reservation) => {
-    let checkIn = new Date(reservation.checkIn);
-    let checkOut = new Date(reservation.checkOut);
-    for (let d = new Date(checkIn); d <= checkOut; d.setDate(d.getDate() + 1)) {
-      if (d.getMonth() === month) {
-        reservationDates[d.getDate()] = true;
+const getDetailAccommodation = async (accId) => {
+  function printCalendar(month, reservations) {
+    const date = new Date();
+    const year = date.getFullYear();
+  
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const startDay = new Date(year, month, 1).getDay();
+  
+    let reservationDates = {};
+    reservations.forEach((reservation) => {
+      let checkIn = new Date(reservation.checkIn);
+      let checkOut = new Date(reservation.checkOut);
+      for (let d = new Date(checkIn); d <= checkOut; d.setDate(d.getDate() + 1)) {
+        if (d.getMonth() === month) {
+          reservationDates[d.getDate()] = true;
+        }
+      }
+    });
+  
+    let calendar = "";
+    let markerRow = "";
+  
+    for (let i = 0; i < startDay; i++) {
+      calendar += "   ";
+      markerRow += "   ";
+    }
+  
+    for (let i = 1; i <= daysInMonth; i++) {
+      calendar += i < 10 ? " " + i + " " : i + " ";
+      if (reservationDates[i]) {
+        markerRow += " O ";
+      } else {
+        markerRow += " * ";
+      }
+      if ((i + startDay) % 7 === 0) {
+        calendar += "\n" + markerRow + "\n";
+        markerRow = "";
       }
     }
-  });
-
-  let calendar = "";
-  let markerRow = "";
-
-  for (let i = 0; i < startDay; i++) {
-    calendar += "   ";
-    markerRow += "   ";
-  }
-
-  for (let i = 1; i <= daysInMonth; i++) {
-    calendar += i < 10 ? " " + i + " " : i + " ";
-    if (reservationDates[i]) {
-      markerRow += " O ";
-    } else {
-      markerRow += " * ";
+  
+    if (daysInMonth + (startDay % 7) !== 0) {
+      calendar += "\n" + markerRow;
     }
-    if ((i + startDay) % 7 === 0) {
-      calendar += "\n" + markerRow + "\n";
-      markerRow = "";
-    }
+  
+    console.log(calendar);
   }
 
-  if (daysInMonth + (startDay % 7) !== 0) {
-    calendar += "\n" + markerRow;
-  }
-
-  console.log(calendar);
-}
-
-const getDetailAccommodation = async () => {
+  //요기
   const response = await axios.get(
-    "http://127.0.0.1:3000/accommodation/6576b5eded9ccbe55c42ad45"
+    `http://127.0.0.1:3000/accommodation/${accId}`
   );
 
   console.log(
@@ -97,4 +106,4 @@ const getDetailAccommodation = async () => {
     "==============================================================="
   );
 };
-getDetailAccommodation();
+getDetailAccommodation("6576b5eded9ccbe55c42ad46");
