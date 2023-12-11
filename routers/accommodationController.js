@@ -16,7 +16,7 @@ router.post("/", async (req, res) => {
 
 router.get("/", async (req, res) => {
   try {
-    const accommodation = await Accommodation.find({});
+    const accommodations = await Accommodation.find({});
     return res.send({ lodgings });
   } catch (err) {
     console.log(err);
