@@ -8,7 +8,11 @@ const init = function () {
     const users = []
     for (let i=0; i<10; i++) {
         const newUser = new User({
-            name: faker.person.lastName() + faker.person.firstName()
+            name: faker.person.lastName() + faker.person.firstName(),
+            age: faker.random.number({
+                min: 1,
+                max: 100
+            })
         });
         newUser.save();
         users.push(newUser);

@@ -1,5 +1,4 @@
 const axios = require("axios");
-const faker = require("faker");
 
 function printCalendar() {
   const date = new Date();
