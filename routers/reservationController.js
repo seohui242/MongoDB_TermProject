@@ -1,12 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const { Lodging } = require("../models/lodging");
+const { Reservation } = require("../models/reservation");
 
 router.post("/", async (req, res) => {
   try {
-    const { city, street, zip_code, check_in, check_out, introduction, name, discount_policy_id, base_id, house_id, rate_policy_id} = req.body;
-    const house = new House(req.body);
-    await house.save();
+    const { user, accommodation, count, checkIn, checkOut, status, price, starRate, review} = req.body;
+    const reservation = new Reservation(req.body);
+    await reservation.save();
     return res.send({ house });
   } catch (err) {
     console.log(err);
@@ -16,7 +16,7 @@ router.post("/", async (req, res) => {
 
 router.get("/", async (req, res) => {
   try {
-    const lodgings = await Lodging.find({});
+    const reservation = await Reservation.find({});
     return res.send({ lodgings });
   } catch (err) {
     console.log(err);
