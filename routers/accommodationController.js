@@ -16,9 +16,101 @@ router.post("/", async (req, res) => {
 });
 
 router.get("/", async (req, res) => {
+  const {checkIn, checkOut, count, type} = req.query
+
+  try {
+    const accommodations = await Accommodation.find({accommodationType: type});
+    
+    resAcc = []
+
+    if (type === "전체") {
+      for (const acc of accommodations) {
+        const dupList = await Reservation.find({
+          accommodation: acc,
+          $or: [
+            {
+              $and: [{
+                checkIn: {$lte: checkIn},
+                checkOut: {$gte: checkOut}
+              }],
+            },
+            {
+              checkIn: {
+                $gte: checkIn,
+                $lt: checkOut
+              }
+            },
+            {
+              checkOut: {
+                $gt: checkIn,
+                $lte: checkOut
+              }
+            }
+          ]
+        });
+        if (dupList.length === 0) resAcc.push(acc);
+      }
+    }
+    else if (type === "개인") {
+      for (const acc of accommodations) {
+        const dupList = await Reservation.find({
+          accommodation: acc._id,
+          $or: [
+            {
+              $and: [{
+                checkIn: {$lte: checkIn},
+                checkOut: {$gte: checkOut}
+              }],
+            },
+            {
+              checkIn: {
+                $gte: checkIn,
+                $lt: checkOut
+              }
+            },
+            {
+              checkOut: {
+                $gt: checkIn,
+                $lte: checkOut
+              }
+            }
+          ]
+        });
+        const cntMap = {}
+        const curDate = new Date(checkIn);
+        const _checkOut = new Date(checkOut);
+
+        while (curDate < _checkOut) {
+          cntMap[curDate] = 0;
+          dupList.forEach(dup => {
+            if (dup.checkIn <= curDate && curDate < dup.checkOut) {
+              cntMap[curDate] += dup.count
+            }
+          });
+          curDate.setDate(curDate.getDate() + 1)
+        }
+
+        let pass = true;
+
+        for (const curCount of Object.values(cntMap)) {
+          if (count > acc.capacity - curCount) pass = false;
+        }
+
+        if (pass) resAcc.push(acc);
+      }
+    }
+    
+    return res.send({ resAcc });
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send({ err: err.message });
+  }
+});
+
+router.get("/", async (req, res) => {
   try {
     const accommodations = await Accommodation.find({});
-    return res.send({ lodgings });
+    return res.send({ accommodations });
   } catch (err) {
     console.log(err);
     return res.status(400).send({ err: err.message });
