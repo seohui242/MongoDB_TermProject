@@ -26,7 +26,7 @@ router.get("/", async (req, res) => {
     if (type === "전체") {
       for (const acc of accommodations) {
         const dupList = await Reservation.find({
-          accommodation: acc,
+          accommodation: acc._id,
           $or: [
             {
               $and: [{
