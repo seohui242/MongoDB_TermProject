@@ -6,7 +6,7 @@ const getSearchAccomodation = async (checkIn, checkOut, count, type) => {
   );
   console.log(response.data);
 }
-getSearchAccomodation("2023-12-04", "2023-12-05", 5, "개인");
+// getSearchAccomodation("2023-12-04", "2023-12-05", 6, "개인");
 
 //2. 숙소 상세 조회 (검사할 때는 뒤에 숙소 _id 확인하고 넣어서 ㄱㄱ)
 const getDetailAccommodation = async (accId) => {
@@ -67,7 +67,6 @@ const getDetailAccommodation = async (accId) => {
     console.log(calendar);
   }
 
-  //요기
   const response = await axios.get(
     `http://127.0.0.1:3000/accommodation/${accId}`
   );
@@ -117,13 +116,11 @@ const getDetailAccommodation = async (accId) => {
     "==============================================================="
   );
 };
-getDetailAccommodation("6576b5eded9ccbe55c42ad46");
+//getDetailAccommodation("6576b5eded9ccbe55c42ad46");
 
 
 //기능3
 const bookHouse = async (userId, accommodationId, count, checkIn, checkOut) => {
-
-
     const accommodation = await axios.get(
         `http://127.0.0.1:3000/accommodation/${accommodationId}/house`
       );
@@ -172,14 +169,14 @@ const bookHouse = async (userId, accommodationId, count, checkIn, checkOut) => {
     console.log(responseReservatTest1.data.status)
 
 }
-const userId = '6577264aebe3f27b1cdd4625';
-const accommodationId = '6577264aebe3f27b1cdd4630';
-const count = 1;
-const checkIn = new Date('2023-12-12');
-
-const checkOut = new Date('2023-12-13');
-
+const userId = '6576b5eded9ccbe55c42ad3b';
+const accommodationId = '6576b5eded9ccbe55c42ad46';
+const count = 3;
+const checkIn = new Date('2023-12-04');
+const checkOut = new Date('2023-12-05');
 //bookHouse(userId, accommodationId, count, checkIn, checkOut)
+
+//기능4
 const cancelReserve = async (reserveId) => {
     try {
         const response = await axios.get(`http://127.0.0.1:3000/reservation/${reserveId}`);
@@ -201,5 +198,5 @@ const cancelReserve = async (reserveId) => {
     }
 
 };
-const reserveIdToCancel = '65773d6ab8b0cfeae173ccb5';
-cancelReserve(reserveIdToCancel);
+const reserveIdToCancel = '6577e10575f27b71dbb0b864';
+// cancelReserve(reserveIdToCancel);
