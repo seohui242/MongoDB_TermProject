@@ -6,7 +6,7 @@ const getSearchAccomodation = async (checkIn, checkOut, count, type) => {
   );
   console.log(response.data);
 }
-// getSearchAccomodation("2023-12-04", "2023-12-05", 6, "개인");
+getSearchAccomodation("2023-12-04", "2023-12-05", 6, "개인");
 
 //2. 숙소 상세 조회 (검사할 때는 뒤에 숙소 _id 확인하고 넣어서 ㄱㄱ)
 const getDetailAccommodation = async (accId) => {
@@ -23,7 +23,7 @@ const getDetailAccommodation = async (accId) => {
       let checkOut = new Date(reservation.checkOut);
       let count = reservation.count;
       for (let d = new Date(checkIn); d <= checkOut; d.setDate(d.getDate() + 1)) {
-        if (d.getMonth() === month) {
+        if (d.getMonth() === month && reservation.status !== "취소") {
           let date = d.getDate();
           if (reservationDates[date]) {
             reservationDates[date].count += count;
@@ -116,7 +116,7 @@ const getDetailAccommodation = async (accId) => {
     "==============================================================="
   );
 };
-//getDetailAccommodation("6576b5eded9ccbe55c42ad46");
+getDetailAccommodation("6576b5eded9ccbe55c42ad46");
 
 
 //기능3
