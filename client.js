@@ -13,10 +13,10 @@ const getDetailAccommodation = async (accId) => {
   function printCalendar(month, reservations, type, capacity) {
     const date = new Date();
     const year = date.getFullYear();
-  
+
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const startDay = new Date(year, month, 1).getDay();
-  
+
     let reservationDates = {};
     reservations.forEach((reservation) => {
       let checkIn = new Date(reservation.checkIn);
@@ -36,15 +36,15 @@ const getDetailAccommodation = async (accId) => {
         }
       }
     });
-  
+
     let calendar = "";
     let markerRow = "";
-  
+
     for (let i = 0; i < startDay; i++) {
       calendar += "   ";
       markerRow += "   ";
     }
-  
+
     for (let i = 1; i <= daysInMonth; i++) {
       calendar += i < 10 ? " " + i + " " : i + " ";
       if (reservationDates[i]) {
@@ -59,11 +59,11 @@ const getDetailAccommodation = async (accId) => {
         markerRow = "";
       }
     }
-  
+
     if (daysInMonth + (startDay % 7) !== 0) {
       calendar += "\n" + markerRow;
     }
-  
+
     console.log(calendar);
   }
 
@@ -113,8 +113,93 @@ const getDetailAccommodation = async (accId) => {
 
   console.log("\n[RESERVATION CALENDAR]");
   printCalendar(month, response.data.reservations, response.data.accommodationType, response.data.accommodation.capacity);
-  console.log(
+    console.log(
     "==============================================================="
   );
 };
 getDetailAccommodation("6576b5eded9ccbe55c42ad46");
+
+
+//기능3
+const bookHouse = async (userId, accommodationId, count, checkIn, checkOut) => {
+
+
+    const accommodation = await axios.get(
+        `http://127.0.0.1:3000/accommodation/${accommodationId}/house`
+      );
+    console.log(accommodation);
+
+    console.log(checkOut - checkIn)
+
+    const nights = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
+    let weekdays = 0
+    let weekend = 0
+
+    let currentDate = new Date(checkIn);
+
+    while (currentDate <= checkOut) {
+        const dayOfWeek = currentDate.getDay();
+        if (dayOfWeek >= 1 && dayOfWeek <= 4) { //월~목
+            weekdays++;
+        }else{ weekend++; }
+        currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    console.log(weekdays, nights)
+    console.log(accommodation.data.weekdayPrice)
+
+    const price = weekdays * accommodation.data.weekdayPrice + weekend * accommodation.data.weekendPrice;
+    console.log(price)
+    console.log(userId, accommodationId, count, checkIn, checkOut, price)
+
+    const reservationData = {
+        user: userId,
+        accommodation: accommodationId,
+        count: count,
+        checkIn: checkIn,
+        checkOut: checkOut,
+        status: '예약',
+        price: price,
+        starRate: null,
+        review: null
+    };
+
+    console.log(reservationData)
+
+    const responseReservatTest1 = await axios.post('http://127.0.0.1:3000/reservation', reservationData);
+    console.log("=======예약 완료======")
+    console.log(responseReservatTest1.data.accommodation)
+    console.log(responseReservatTest1.data.status)
+
+}
+const userId = '6577264aebe3f27b1cdd4625';
+const accommodationId = '6577264aebe3f27b1cdd4630';
+const count = 1;
+const checkIn = new Date('2023-12-12');
+
+const checkOut = new Date('2023-12-13');
+
+//bookHouse(userId, accommodationId, count, checkIn, checkOut)
+const cancelReserve = async (reserveId) => {
+    try {
+        const response = await axios.get(`http://127.0.0.1:3000/reservation/${reserveId}`);
+        const reservation = response.data.reservation;
+
+        if (!reservation) {
+            console.log('Reservation not found');
+            return;
+        }
+
+        reservation.status = '취소';
+
+        const updateResponse = await axios.put(`http://127.0.0.1:3000/reservation/${reserveId}`, reservation);
+
+        console.log('Reservation canceled successfully');
+        console.log(updateResponse.data);
+    } catch (error) {
+        console.error('Error canceling reservation:', error.response ? error.response.data : error.message);
+    }
+
+};
+const reserveIdToCancel = '65773d6ab8b0cfeae173ccb5';
+cancelReserve(reserveIdToCancel);
