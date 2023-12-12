@@ -1,9 +1,15 @@
 const faker = require('faker');
+const mongoose = require("mongoose");
 const { User } = require("./models/user")
 const { Accommodation } = require("./models/accommodation")
 const { Reservation } = require("./models/reservation")
 
+
+
 const init = function () {
+
+    const db = mongoose.connection.db;
+  
     // INIT USER
     const users = []
     for (let i=0; i<10; i++) {
@@ -67,6 +73,7 @@ const init = function () {
             reservations.push(newReservation);
         }
     }
+
 }
 
 module.exports = init;

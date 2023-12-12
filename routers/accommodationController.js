@@ -137,4 +137,19 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+router.get("/:id/house", async (req, res) => {
+  try {
+    const accommodationId = req.params.id;
+    
+    const accommodation = await Accommodation.findById(accommodationId);
+    console.log(accommodation)
+    if (!accommodation) return res.status(404).send({ err: 'Accommodation not found' });
+
+    return res.send(accommodation);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send({ err: err.message });
+  }
+});
+
 module.exports = router;
