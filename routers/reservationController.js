@@ -62,4 +62,45 @@ router.put("/:id", async (req, res) => {
   }
 });
 
+router.get("/myReservations/:userId", async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const myReservations = await Reservation.find({ user: userId }).populate("accommodation");
+    console.log(myReservations)
+    res.send(myReservations)
+  } catch (error) {
+    console.error("Error fetching my reservations:", error.message);
+    res.status(500).send({ error: "Internal Server Error" });
+  }
+});
+
+router.put("/review/:id", async (req, res) => {
+  try {
+    const reservationId = req.params.id;
+
+    const reservation = await Reservation.findById(reservationId);
+    
+    if (reservation.status == '체크인') {
+      return res.status(400).send({ error: '리뷰를 작성할 수 있는 예약이 아닙니다.' });
+    }
+
+    const { starRate, review } = req.body;
+
+    const updatedReservation = await Reservation.findByIdAndUpdate(
+      reservationId,
+      { starRate, review },
+      { new: true }
+    );
+
+    if (!updatedReservation) {
+      return res.status(404).send({ error: 'Reservation not found' });
+    }
+
+    return res.send({ updatedReservation });
+  } catch (err) {
+    console.error(err);
+    return res.status(400).send({ error: err.message });
+  }
+});
+
 module.exports = router;

@@ -6,7 +6,7 @@ const getSearchAccomodation = async (checkIn, checkOut, count, type) => {
   );
   console.log(response.data);
 }
-//getSearchAccomodation("2023-12-14", "2023-12-15", 3, "개인");
+//getSearchAccomodation("2023-12-04", "2023-12-05", 6, "개인");
 
 //2. 숙소 상세 조회 (검사할 때는 뒤에 숙소 _id 확인하고 넣어서 ㄱㄱ)
 const getDetailAccommodation = async (accId) => {
@@ -116,7 +116,7 @@ const getDetailAccommodation = async (accId) => {
     "==============================================================="
   );
 };
-//getDetailAccommodation("65799100896a61a24504e3d2");
+//getDetailAccommodation("6576b5eded9ccbe55c42ad46");
 
 
 //기능3
@@ -169,11 +169,11 @@ const bookHouse = async (userId, accommodationId, count, checkIn, checkOut) => {
     console.log(responseReservatTest1.data.status)
 
 }
-const userId = '65799100896a61a24504e3c9';
-const accommodationId = '65799100896a61a24504e3d2';
+const userId = '6576b5eded9ccbe55c42ad3b';
+const accommodationId = '6576b5eded9ccbe55c42ad46';
 const count = 3;
-const checkIn = new Date('2023-12-14');
-const checkOut = new Date('2023-12-15');
+const checkIn = new Date('2023-12-04');
+const checkOut = new Date('2023-12-05');
 //bookHouse(userId, accommodationId, count, checkIn, checkOut)
 
 //기능4
@@ -198,5 +198,78 @@ const cancelReserve = async (reserveId) => {
     }
 
 };
-const reserveIdToCancel = '657992d4edf0ce1c182341bb';
-//cancelReserve(reserveIdToCancel);
+const reserveIdToCancel = '6577e10575f27b71dbb0b864';
+// cancelReserve(reserveIdToCancel);
+
+//5. 마이페이지
+const getMyPage = async (userId) => {
+  const myReservations = await axios.get(
+    `http://127.0.0.1:3000/reservation/myReservations/${userId}`
+  );
+
+  // console.log("=======마이페이지==============")
+  // console.log(myReservations.data);
+  // console.log("=============================")
+
+  for(let i=0; i < myReservations.data.length; i++){
+    const my = myReservations.data[i];
+    console.log("숙소명:", my.accommodation.name);
+    console.log("체크인:", my.checkIn);
+    console.log("체크아웃:", my.checkOut);
+    console.log("요금:", my.price);
+    console.log("후기:", my.review || "후기 없음"); // 후기가 없으면 "후기 없음" 표시
+    console.log("===============");
+  }
+}
+//getMyPage('65781ba56513c948468f671d');
+
+
+//bookHouse(userId, '65781ba56513c948468f6720', checkIn, checkOut)
+//6. 리뷰작성
+
+const reservationData = {
+  user: "user_id",
+  accommodation: "accommodation_id",
+  count: 1,
+  checkIn: new Date(),
+  checkOut: new Date(),
+  status: "예약",
+  price: 100000, 
+  starRate: 4, 
+  review: "좋았어요!",
+};
+
+const writeReview = async (reserveId, starRate, review) => {
+  try {
+    const response = await axios.get(`http://127.0.0.1:3000/reservation/${reserveId}`);
+    const reservation = response.data.reservation;
+
+    console.log(reservation)
+
+    if (!reservation) {
+        console.log('Reservation not found');
+        return;
+    }
+
+    reservation.starRate = starRate;
+    reservation.review = review
+
+    const updateResponse = await axios.put(`http://127.0.0.1:3000/reservation/review/${reserveId}`, reservation);
+
+    console.log("리뷰작성 완료 ")
+    console.log(updateResponse.data);
+  } catch (error) {
+    console.error('Error canceling reservation:', error.response ? error.response.data : error.message);
+  }
+  
+}
+
+writeReview('6579bafa81078d32a1dd8dac', 5, "굳")
+
+// axios.post("http://127.0.0.1:3000/reservation", reservationData)
+//   .then((response) => {
+//     console.log(response.data);
+//   })
+//   .catch((error) => {
+//     console.error("Error adding reservation and review:", error.message);
+//   });
