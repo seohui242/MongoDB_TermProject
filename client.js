@@ -6,7 +6,7 @@ const getSearchAccomodation = async (checkIn, checkOut, count, type) => {
   );
   console.log(response.data);
 }
-getSearchAccomodation("2023-12-04", "2023-12-05", 6, "개인");
+//getSearchAccomodation("2023-12-14", "2023-12-15", 3, "개인");
 
 //2. 숙소 상세 조회 (검사할 때는 뒤에 숙소 _id 확인하고 넣어서 ㄱㄱ)
 const getDetailAccommodation = async (accId) => {
@@ -116,7 +116,7 @@ const getDetailAccommodation = async (accId) => {
     "==============================================================="
   );
 };
-getDetailAccommodation("6576b5eded9ccbe55c42ad46");
+//getDetailAccommodation("65799100896a61a24504e3d2");
 
 
 //기능3
@@ -169,11 +169,11 @@ const bookHouse = async (userId, accommodationId, count, checkIn, checkOut) => {
     console.log(responseReservatTest1.data.status)
 
 }
-const userId = '6576b5eded9ccbe55c42ad3b';
-const accommodationId = '6576b5eded9ccbe55c42ad46';
+const userId = '65799100896a61a24504e3c9';
+const accommodationId = '65799100896a61a24504e3d2';
 const count = 3;
-const checkIn = new Date('2023-12-04');
-const checkOut = new Date('2023-12-05');
+const checkIn = new Date('2023-12-14');
+const checkOut = new Date('2023-12-15');
 //bookHouse(userId, accommodationId, count, checkIn, checkOut)
 
 //기능4
@@ -198,5 +198,5 @@ const cancelReserve = async (reserveId) => {
     }
 
 };
-const reserveIdToCancel = '6577e10575f27b71dbb0b864';
-// cancelReserve(reserveIdToCancel);
+const reserveIdToCancel = '657992d4edf0ce1c182341bb';
+//cancelReserve(reserveIdToCancel);

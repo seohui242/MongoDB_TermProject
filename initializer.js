@@ -36,7 +36,7 @@ const init = function () {
                 street: faker.address.streetName(),
                 zipCode: faker.address.zipCode(),
             },
-            accommodationType: i<5 ? "개인":"전체",
+            accommodationType: i<2 ? "개인":"전체",
             amenity: faker.random.arrayElements([
                 "편의시설1",
                 "편의시설2",
