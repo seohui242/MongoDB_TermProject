@@ -62,10 +62,23 @@ router.put("/:id", async (req, res) => {
   }
 });
 
+router.get("/myReservations/:userId/:status", async (req, res) => {
+  try {
+    const status = req.params.status;
+    const userId = req.params.userId;
+    const myReservations = await Reservation.find({ user: userId, status: status }).populate("accommodation");
+    console.log(myReservations)
+    res.send(myReservations)
+  } catch (error) {
+    console.error("Error fetching my reservations:", error.message);
+    res.status(500).send({ error: "Internal Server Error" });
+  }
+});
+
 router.get("/myReservations/:userId", async (req, res) => {
   try {
     const userId = req.params.userId;
-    const myReservations = await Reservation.find({ user: userId }).populate("accommodation");
+    const myReservations = await Reservation.find({ user: userId}).populate("accommodation");
     console.log(myReservations)
     res.send(myReservations)
   } catch (error) {
