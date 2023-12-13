@@ -1,4 +1,10 @@
 const axios = require("axios");
+//0. INIT DATA
+const init = async () => {
+    axios.post("http://127.0.0.1:3000/init")
+}
+// init();
+
 //1. 조건에 맞는 숙소 조회
 const getSearchAccomodation = async (checkIn, checkOut, count, type) => {
   const response = await axios.get(
@@ -6,7 +12,7 @@ const getSearchAccomodation = async (checkIn, checkOut, count, type) => {
   );
   console.log(response.data);
 }
-//getSearchAccomodation("2023-12-14", "2023-12-15", 3, "개인");
+// getSearchAccomodation("2023-12-14", "2023-12-15", 3, "개인");
 
 //2. 숙소 상세 조회 (검사할 때는 뒤에 숙소 _id 확인하고 넣어서 ㄱㄱ)
 const getDetailAccommodation = async (accId) => {
@@ -124,10 +130,6 @@ const bookHouse = async (userId, accommodationId, count, checkIn, checkOut) => {
     const accommodation = await axios.get(
         `http://127.0.0.1:3000/accommodation/${accommodationId}/house`
       );
-    console.log(accommodation);
-
-    console.log(checkOut - checkIn)
-
     const nights = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
     let weekdays = 0
     let weekend = 0
@@ -142,13 +144,7 @@ const bookHouse = async (userId, accommodationId, count, checkIn, checkOut) => {
         currentDate.setDate(currentDate.getDate() + 1);
     }
 
-    console.log(weekdays, nights)
-    console.log(accommodation.data.weekdayPrice)
-
     const price = weekdays * accommodation.data.weekdayPrice + weekend * accommodation.data.weekendPrice;
-    console.log(price)
-    console.log(userId, accommodationId, count, checkIn, checkOut, price)
-
     const reservationData = {
         user: userId,
         accommodation: accommodationId,
@@ -161,13 +157,10 @@ const bookHouse = async (userId, accommodationId, count, checkIn, checkOut) => {
         review: null
     };
 
-    console.log(reservationData)
-
     const responseReservatTest1 = await axios.post('http://127.0.0.1:3000/reservation', reservationData);
     console.log("=======예약 완료======")
     console.log(responseReservatTest1.data.accommodation)
     console.log(responseReservatTest1.data.status)
-
 }
 const userId = '6576b5eded9ccbe55c42ad3b';
 const accommodationId = '6579c46764c31edf90c98046';
@@ -230,18 +223,6 @@ const getMyPage = async (userId, status) => {
 //bookHouse(userId, '65781ba56513c948468f6720', checkIn, checkOut)
 
 //6. 리뷰작성
-const reservationData = {
-  user: "user_id",
-  accommodation: "accommodation_id",
-  count: 1,
-  checkIn: new Date(),
-  checkOut: new Date(),
-  status: "예약",
-  price: 100000, 
-  starRate: 4, 
-  review: "좋았어요!",
-};
-
 const writeReview = async (reserveId, starRate, review) => {
   try {
     const response = await axios.get(`http://127.0.0.1:3000/reservation/${reserveId}`);
